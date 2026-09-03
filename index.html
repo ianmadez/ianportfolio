@@ -9,7 +9,11 @@
     <meta property="og:title" content="Ian Madez | Design Engineer">
     <meta property="og:description" content="Premium, conversion-focused websites — hand-coded from scratch.">
     <meta property="og:type" content="website">
-    <script>document.documentElement.classList.remove('no-js');</script>
+    <script>
+        document.documentElement.classList.remove('no-js');
+        const savedTheme = localStorage.getItem('portfolio-theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -37,10 +41,15 @@
                         <a href="#contact">Contact</a>
                     </div>
 
-                    <div class="burger-menu" id="burger-menu">
-                        <span></span>
-                        <span></span>
-                        <span></span>
+                    <div style="display: flex; align-items: center;">
+                        <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+                            <i class="fas fa-moon"></i>
+                        </button>
+                        <div class="burger-menu" id="burger-menu">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
                     </div>
                 </div>
             </nav>
@@ -49,18 +58,28 @@
                 <div class="close-menu" id="close-menu">&times;</div>
                 <a href="#hero" class="mobile-link">Home</a>
                 <a href="#work" class="mobile-link">Projects</a>
-                <a href="#testimonials" class="mobile-link">Testimonials</a>
                 <a href="#services" class="mobile-link">Services</a>
+                <a href="#testimonials" class="mobile-link">Testimonials</a>
                 <a href="#contact" class="mobile-link">Contact</a>
             </div>
         </div>
     </header>
 
+    <!-- SVG Refraction Filter for Real Frosted Glass -->
+    <svg style="position: absolute; width: 0; height: 0; pointer-events: none;" aria-hidden="true">
+        <defs>
+            <filter id="svg-glass-bend">
+                <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" result="noise" />
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="7" xChannelSelector="R" yChannelSelector="G" />
+            </filter>
+        </defs>
+    </svg>
+
     <!-- Hero Section -->
     <section class="hero" id="hero">
-        <div class="blob"></div>
+        <div class="blob" id="interactive-blob"></div>
         <div class="container">
-            <div class="hero-content">
+            <div class="hero-content frosted-glass">
                 <h3>Portfolio</h3>
                 <h2>Ian Madez</h2>
                 <h1>Creative Developer & <span class="gradient-text">UI Designer.</span></h1>
@@ -108,30 +127,174 @@
         </div>
     </section>
 
+    <!-- Project 01: DeadSpace -->
     <section class="project" id="work">
         <div class="container">
             <div class="project-header">
-                <h3>01 — Premium Service Agency</h3>
+                <h3>01 — Audio Brand & Web Audio</h3>
+                <h2>DeadSpace</h2>
+            </div>
+
+            <div class="project-grid">
+                <div class="project-info">
+                    <p class="highlight">A centralized digital hub for an artist project, integrating interactive web audio streaming with a bespoke dark-mode UI.</p>
+                    <ul class="project-feature-list">
+                        <li><strong>The Challenge:</strong> Moving beyond conventional streaming profiles to engineer a standalone, tactile sonic experience.</li>
+                        <li><strong>The Solution:</strong> An immersive high-contrast identity powered by custom-coded HTML5 audio players.</li>
+                        <li><strong>Key Feature:</strong> Two-layer interactive hero asset paired with aggressive asset optimization for heavy media.</li>
+                    </ul>
+                    <div class="tag-container" style="justify-content: flex-start;">
+                        <span class="tag">Artist Brand</span>
+                        <span class="tag">Web Audio API</span>
+                        <span class="tag">Interactive UI</span>
+                        <a class="btn-live" href="https://deadspace.page.gd" target="_blank" rel="noopener noreferrer">Live Site <i class="fas fa-arrow-up-right-from-square"></i></a>
+                    </div>
+                </div>
+
+                <div class="browser-window">
+                    <div class="browser-header">
+                        <div class="dot red"></div>
+                        <div class="dot yellow"></div>
+                        <div class="dot green"></div>
+                        <div class="address-bar">https://deadspace.page.gd</div>
+                    </div>
+                    <iframe src="https://deadspace.page.gd" class="live-preview-frame" title="DeadSpace Preview" loading="lazy"></iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Project 02: Wedge RMS -->
+    <section class="project">
+        <div class="container">
+            <div class="project-header">
+                <h3>02 — Hospitality SaaS & WebGL</h3>
+                <h2>Wedge RMS</h2>
+            </div>
+
+            <div class="project-grid">
+                <div class="project-info">
+                    <p class="highlight">A next-generation revenue management system built for boutique and luxury hospitality operators.</p>
+                    <ul class="project-feature-list">
+                        <li><strong>The Challenge:</strong> Presenting complex rate optimization, occupancy forecasting, and financial metrics in an intuitive interface.</li>
+                        <li><strong>The Solution:</strong> High-density data dashboards combined with atmospheric creative engineering.</li>
+                        <li><strong>Key Feature:</strong> Hardware-accelerated GLSL shader background delivering dynamic, fluid visual depth.</li>
+                    </ul>
+                    <div class="tag-container" style="justify-content: flex-start;">
+                        <span class="tag">SaaS Platform</span>
+                        <span class="tag">GLSL Shader</span>
+                        <span class="tag">Data UI</span>
+                        <a class="btn-live" href="https://wedge-rms.vercel.app/" target="_blank" rel="noopener noreferrer">Live Site <i class="fas fa-arrow-up-right-from-square"></i></a>
+                    </div>
+                </div>
+
+                <div class="browser-window">
+                    <div class="browser-header">
+                        <div class="dot red"></div>
+                        <div class="dot yellow"></div>
+                        <div class="dot green"></div>
+                        <div class="address-bar">https://wedge-rms.vercel.app/</div>
+                    </div>
+                    <iframe src="https://wedge-rms.vercel.app/" class="live-preview-frame" title="Wedge RMS Preview" loading="lazy"></iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Project 03: Bifrost Platform -->
+    <section class="project">
+        <div class="container">
+            <div class="project-header">
+                <h3>03 — Client Management Portal</h3>
+                <h2>Bifrost Platform</h2>
+            </div>
+
+            <div class="project-grid">
+                <div class="project-info">
+                    <p class="highlight">A modern freelancer-to-client operations hub built to streamline deliverables, approvals, and onboarding.</p>
+                    <ul class="project-feature-list">
+                        <li><strong>The Challenge:</strong> Eliminating communication friction and fragmented asset handovers for independent digital operators.</li>
+                        <li><strong>The Solution:</strong> An all-in-one portal pairing structured client milestones with tactile feedback.</li>
+                        <li><strong>Key Feature:</strong> Interactive landing architecture highlighted by continuous SVG-pathed animations and scroll triggers.</li>
+                    </ul>
+                    <div class="tag-container" style="justify-content: flex-start;">
+                        <span class="tag">Client Portal</span>
+                        <span class="tag">SVG Animation</span>
+                        <span class="tag">Micro-Interactions</span>
+                        <a class="btn-live" href="https://bifrost-platform.vercel.app/" target="_blank" rel="noopener noreferrer">Live Site <i class="fas fa-arrow-up-right-from-square"></i></a>
+                    </div>
+                </div>
+
+                <div class="browser-window">
+                    <div class="browser-header">
+                        <div class="dot red"></div>
+                        <div class="dot yellow"></div>
+                        <div class="dot green"></div>
+                        <div class="address-bar">https://bifrost-platform.vercel.app/</div>
+                    </div>
+                    <iframe src="https://bifrost-platform.vercel.app/" class="live-preview-frame" title="Bifrost Platform Preview" loading="lazy"></iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Project 04: ClariFi -->
+    <section class="project">
+        <div class="container">
+            <div class="project-header">
+                <h3>04 — Local-First Personal Finance</h3>
+                <h2>ClariFi</h2>
+            </div>
+
+            <div class="project-grid">
+                <div class="project-info">
+                    <p class="highlight">A comprehensive, feature-rich financial tracker engineered for 100% offline-first data sovereignty and speed.</p>
+                    <ul class="project-feature-list">
+                        <li><strong>The Challenge:</strong> Delivering deep analytics, budgeting, and transaction categorization without risking cloud exposure.</li>
+                        <li><strong>The Solution:</strong> Zero-latency local storage architecture utilizing IndexedDB for instantaneous reads and writes.</li>
+                        <li><strong>Key Feature:</strong> Rich visualization engine providing cash flow breakdown and expense projections without network dependency.</li>
+                    </ul>
+                    <div class="tag-container" style="justify-content: flex-start;">
+                        <span class="tag">Fintech</span>
+                        <span class="tag">Offline-First</span>
+                        <span class="tag">Local Architecture</span>
+                        <a class="btn-live" href="https://clarifi-site.vercel.app/" target="_blank" rel="noopener noreferrer">Live Site <i class="fas fa-arrow-up-right-from-square"></i></a>
+                    </div>
+                </div>
+
+                <div class="browser-window">
+                    <div class="browser-header">
+                        <div class="dot red"></div>
+                        <div class="dot yellow"></div>
+                        <div class="dot green"></div>
+                        <div class="address-bar">https://clarifi-site.vercel.app/</div>
+                    </div>
+                    <iframe src="https://clarifi-site.vercel.app/" class="live-preview-frame" title="ClariFi Preview" loading="lazy"></iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Project 05: The Nanny Union Agency -->
+    <section class="project">
+        <div class="container">
+            <div class="project-header">
+                <h3>05 — Premium Service Agency</h3>
                 <h2>The Nanny Union Agency</h2>
             </div>
 
             <div class="project-grid">
                 <div class="project-info">
-                    <p class="highlight">A modern, full-stack trust-building digital presence for a premium domestic
-                        staffing agency.</p>
+                    <p class="highlight">A modern, full-stack trust-building digital presence for a premium domestic staffing agency.</p>
                     <ul class="project-feature-list">
-                        <li><strong>The Challenge:</strong> Establishing immediate credibility and trust for high-stakes
-                            childcare services.</li>
-                        <li><strong>The Solution:</strong> A clean, accessible layout with clear service tiers and
-                            streamlined contact routing.</li>
-                        <li><strong>Key Feature:</strong> Professional aesthetic prioritizing clarity and lead
-                            conversion.</li>
+                        <li><strong>The Challenge:</strong> Establishing immediate credibility and trust for high-stakes childcare services.</li>
+                        <li><strong>The Solution:</strong> A clean, accessible layout with clear service tiers and streamlined contact routing.</li>
+                        <li><strong>Key Feature:</strong> Professional aesthetic prioritizing clarity and lead conversion.</li>
                     </ul>
                     <div class="tag-container" style="justify-content: flex-start;">
                         <span class="tag">Agency UI</span>
                         <span class="tag">Conversion</span>
-                        <a class="tag" href="https://www.thenannyunionagency.com" target="_blank"
-                            rel="noopener noreferrer">Live Site ↗</a>
+                        <a class="btn-live" href="https://www.thenannyunionagency.com" target="_blank" rel="noopener noreferrer">Live Site <i class="fas fa-arrow-up-right-from-square"></i></a>
                     </div>
                 </div>
 
@@ -142,39 +305,146 @@
                         <div class="dot green"></div>
                         <div class="address-bar">https://www.thenannyunionagency.com</div>
                     </div>
-                    <iframe src="https://www.thenannyunionagency.com" class="live-preview-frame"
-                        title="The Nanny Union Preview" loading="lazy">
-                    </iframe>
+                    <iframe src="https://www.thenannyunionagency.com" class="live-preview-frame" title="The Nanny Union Preview" loading="lazy"></iframe>
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- Project 06: Chic Emporium -->
     <section class="project">
         <div class="container">
             <div class="project-header">
-                <h3>02 — E-Commerce & Branding</h3>
+                <div class="tech-spec-badge"><i class="fas fa-bolt"></i> TOUCH VIEWPORT • GAMIFIED UX</div>
+                <h3>06 — Mobile-First E-Commerce</h3>
+                <h2>Chic Emporium</h2>
+            </div>
+
+            <div class="project-grid">
+                <div class="project-info">
+                    <p class="highlight">A mobile-exclusive online shopping concept engineered as a high-engagement dopamine simulator.</p>
+                    <ul class="project-feature-list">
+                        <li><strong>The Challenge:</strong> Breaking past cookie-cutter e-commerce grids with an interactive, mobile-native browsing routine.</li>
+                        <li><strong>The Solution:</strong> Fast-paced discovery loops, visceral cart feedback, and rewarding transition choreography.</li>
+                        <li><strong>Key Feature:</strong> Specialized mobile-only viewport architecture tuned for touch mechanics and instant gratification.</li>
+                    </ul>
+                    <div class="tag-container" style="justify-content: flex-start;">
+                        <span class="tag">Mobile-Only</span>
+                        <span class="tag">Creative Commerce</span>
+                        <span class="tag">UX Gamification</span>
+                        <a class="btn-live" href="https://chic-emporium.vercel.app/" target="_blank" rel="noopener noreferrer">Live Site <i class="fas fa-arrow-up-right-from-square"></i></a>
+                    </div>
+                </div>
+
+                <div class="browser-window" id="chic-browser">
+                    <div class="browser-header">
+                        <div class="dot red"></div>
+                        <div class="dot yellow"></div>
+                        <div class="dot green"></div>
+                        <div class="address-bar">https://chic-emporium.vercel.app/</div>
+                        <button class="viewport-toggle-btn" id="toggle-chic-viewport" title="Toggle Phone Shell">
+                            <i class="fas fa-mobile-screen"></i> <span>Phone Mode</span>
+                        </button>
+                    </div>
+                    <iframe src="https://chic-emporium.vercel.app/" class="live-preview-frame" title="Chic Emporium Preview" loading="lazy"></iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Project 07: UpperDeck KL -->
+    <section class="project">
+        <div class="container">
+            <div class="project-header">
+                <h3>07 — Luxury Dining & Hospitality</h3>
+                <h2>UpperDeck KL</h2>
+            </div>
+
+            <div class="project-grid">
+                <div class="project-info">
+                    <p class="highlight">Elevating a heritage venue's digital presence with a cinematic, luxury aesthetic.</p>
+                    <ul class="project-feature-list">
+                        <li><strong>The Challenge:</strong> Translating a high-end physical atmosphere to a screen.</li>
+                        <li><strong>The Solution:</strong> Parallax scrolling and deep, earthy tones to convey warmth.</li>
+                        <li><strong>Key Feature:</strong> "Concierge" booking modal that pre-qualifies guests.</li>
+                    </ul>
+                    <div class="tag-container" style="justify-content: flex-start;">
+                        <span class="tag">Restaurant & Dining</span>
+                        <span class="tag">Brand Identity</span>
+                        <a class="btn-live" href="https://ianmadez.github.io/Upperdeck.KL/" target="_blank" rel="noopener noreferrer">Live Site <i class="fas fa-arrow-up-right-from-square"></i></a>
+                    </div>
+                </div>
+
+                <div class="browser-window">
+                    <div class="browser-header">
+                        <div class="dot red"></div>
+                        <div class="dot yellow"></div>
+                        <div class="dot green"></div>
+                        <div class="address-bar">https://ianmadez.github.io/Upperdeck.KL/</div>
+                    </div>
+                    <iframe src="https://ianmadez.github.io/Upperdeck.KL/" class="live-preview-frame" title="UpperDeck KL Preview" loading="lazy"></iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Project 08: Midnight Anarchy -->
+    <section class="project">
+        <div class="container">
+            <div class="project-header">
+                <h3>08 — Events & Ticketing</h3>
+                <h2>Midnight Anarchy</h2>
+            </div>
+
+            <div class="project-grid">
+                <div class="project-info">
+                    <p class="highlight">An online presence and ticket conversion funnel for an events/party brand, powered by a lightweight Google Sheets/Forms backend engineered for efficiency and easy management.</p>
+                    <ul class="project-feature-list">
+                        <li><strong>The Challenge:</strong> Rapidly convert social traffic into ticket purchases and RSVPs.</li>
+                        <li><strong>The Solution:</strong> Streamlined landing + ticket flow with Google Forms/Sheets as the backend engine.</li>
+                        <li><strong>Key Feature:</strong> Fast checkout, easy event management, and conversion-focused microcopy.</li>
+                    </ul>
+                    <div class="tag-container" style="justify-content: flex-start;">
+                        <span class="tag">Event Space</span>
+                        <span class="tag">Workflow Automation</span>
+                        <a class="btn-live" href="https://ianmadez.github.io/midnight-anarchy/" target="_blank" rel="noopener noreferrer">Live Site <i class="fas fa-arrow-up-right-from-square"></i></a>
+                    </div>
+                </div>
+
+                <div class="browser-window">
+                    <div class="browser-header">
+                        <div class="dot red"></div>
+                        <div class="dot yellow"></div>
+                        <div class="dot green"></div>
+                        <div class="address-bar">https://ianmadez.github.io/midnight-anarchy/</div>
+                    </div>
+                    <iframe src="https://ianmadez.github.io/midnight-anarchy/" class="live-preview-frame" title="Midnight Anarchy Preview" loading="lazy"></iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Project 09: Snack Squad -->
+    <section class="project">
+        <div class="container">
+            <div class="project-header">
+                <h3>09 — E-Commerce & Branding</h3>
                 <h2>Snack Squad</h2>
             </div>
 
             <div class="project-grid">
                 <div class="project-info">
-                    <p class="highlight">An engaging "from rescue to retail" platform for a startup rooted in premium
-                        jerky and pickled
-                        products.</p>
+                    <p class="highlight">An engaging "from rescue to retail" platform for a startup rooted in premium jerky and pickled products.</p>
                     <ul class="project-feature-list">
-                        <li><strong>The Challenge:</strong> Communicating a unique brand story while simultaneously
-                            driving product sales.</li>
-                        <li><strong>The Solution:</strong> Custom "How It Works" scroll paths and a highly optimized
-                            product UI.</li>
+                        <li><strong>The Challenge:</strong> Communicating a unique brand story while simultaneously driving product sales.</li>
+                        <li><strong>The Solution:</strong> Custom "How It Works" scroll paths and a highly optimized product UI.</li>
                         <li><strong>Key Feature:</strong> Bold visual hierarchy tailored for modern e-commerce.</li>
                     </ul>
                     <div class="tag-container" style="justify-content: flex-start;">
                         <span class="tag">E-Commerce</span>
                         <span class="tag">Startup</span>
                         <span class="tag">Brand Identity</span>
-                        <a class="tag" href="https://ianmadez.github.io/snacksquad-site/" target="_blank"
-                            rel="noopener noreferrer">Live Site ↗</a>
+                        <a class="btn-live" href="https://ianmadez.github.io/snacksquad-site/" target="_blank" rel="noopener noreferrer">Live Site <i class="fas fa-arrow-up-right-from-square"></i></a>
                     </div>
                 </div>
 
@@ -185,41 +455,35 @@
                         <div class="dot green"></div>
                         <div class="address-bar">https://ianmadez.github.io/snacksquad-site/</div>
                     </div>
-                    <iframe src="https://ianmadez.github.io/snacksquad-site/" class="live-preview-frame"
-                        title="Snack Squad Preview" loading="lazy">
-                    </iframe>
+                    <iframe src="https://ianmadez.github.io/snacksquad-site/" class="live-preview-frame" title="Snack Squad Preview" loading="lazy"></iframe>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Project 3: Poblano -->
+    <!-- Project 10: Poblano KL -->
     <section class="project">
         <div class="container">
             <div class="project-header">
-                <h3>03 — Restaurant & Lead Gen</h3>
+                <h3>10 — Restaurant & Lead Gen</h3>
                 <h2>Poblano KL</h2>
             </div>
 
             <div class="project-grid">
                 <div class="project-info">
-                    <p class="highlight">A vibrant, conversion-focused landing page designed to capture Instagram
-                        traffic.</p>
+                    <p class="highlight">A vibrant, conversion-focused landing page designed to capture Instagram traffic.</p>
                     <ul class="project-feature-list">
                         <li><strong>The Challenge:</strong> High social media traffic but low direct bookings.</li>
-                        <li><strong>The Solution:</strong> A "Sticky" mobile-first experience with instant WhatsApp
-                            integration.</li>
+                        <li><strong>The Solution:</strong> A "Sticky" mobile-first experience with instant WhatsApp integration.</li>
                         <li><strong>Key Feature:</strong> Live "Open/Closed" status indicator based on real time.</li>
                     </ul>
                     <div class="tag-container" style="justify-content: flex-start;">
                         <span class="tag">Restaurant & Dining</span>
                         <span class="tag">Brand Identity</span>
-                        <a class="tag" href="https://ianmadez.github.io/PoblanoKL/" target="_blank"
-                            rel="noopener noreferrer">Live Site ↗</a>
+                        <a class="btn-live" href="https://ianmadez.github.io/PoblanoKL/" target="_blank" rel="noopener noreferrer">Live Site <i class="fas fa-arrow-up-right-from-square"></i></a>
                     </div>
                 </div>
 
-                <!-- LIVE PREVIEW WINDOW -->
                 <div class="browser-window">
                     <div class="browser-header">
                         <div class="dot red"></div>
@@ -227,147 +491,14 @@
                         <div class="dot green"></div>
                         <div class="address-bar">https://ianmadez.github.io/PoblanoKL/</div>
                     </div>
-                    <!-- IMPORTANT: PASTE YOUR LINK IN THE SRC ATTRIBUTE BELOW -->
-                    <iframe src="https://ianmadez.github.io/PoblanoKL/" class="live-preview-frame"
-                        title="Poblano KL Preview" loading="lazy">
-                    </iframe>
+                    <iframe src="https://ianmadez.github.io/PoblanoKL/" class="live-preview-frame" title="Poblano KL Preview" loading="lazy"></iframe>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Project 4: UpperDeck -->
-    <section class="project">
-        <div class="container">
-            <div class="project-header">
-                <h3>04 — Luxury Dining</h3>
-                <h2>UpperDeck KL</h2>
-            </div>
-
-            <div class="project-grid">
-                <div class="project-info">
-                    <p class="highlight">Elevating a heritage venue's digital presence with a cinematic, luxury
-                        aesthetic.</p>
-                    <ul class="project-feature-list">
-                        <li><strong>The Challenge:</strong> Translating a high-end physical atmosphere to a screen.</li>
-                        <li><strong>The Solution:</strong> Parallax scrolling and deep, earthy tones to convey warmth.
-                        </li>
-                        <li><strong>Key Feature:</strong> "Concierge" booking modal that pre-qualifies guests.</li>
-                    </ul>
-                    <div class="tag-container" style="justify-content: flex-start;">
-                        <span class="tag">Restaurant & Dining</span>
-                        <span class="tag">Brand Identity</span>
-                        <a class="tag" href="https://ianmadez.github.io/Upperdeck.KL/" target="_blank"
-                            rel="noopener noreferrer">Live Site ↗</a>
-                    </div>
-                </div>
-
-                <!-- LIVE PREVIEW WINDOW -->
-                <div class="browser-window">
-                    <div class="browser-header">
-                        <div class="dot red"></div>
-                        <div class="dot yellow"></div>
-                        <div class="dot green"></div>
-                        <div class="address-bar">https://ianmadez.github.io/Upperdeck.KL/</div>
-                    </div>
-                    <!-- IMPORTANT: PASTE YOUR LINK IN THE SRC ATTRIBUTE BELOW -->
-                    <iframe src="https://ianmadez.github.io/Upperdeck.KL/" class="live-preview-frame"
-                        title="UpperDeck KL Preview" loading="lazy">
-                    </iframe>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Project 5: DeadSpace -->
-    <section class="project">
-        <div class="container">
-            <div class="project-header">
-                <h3>05 — Audio Brand</h3>
-                <h2>DeadSpace</h2>
-            </div>
-
-            <div class="project-grid">
-                <div class="project-info">
-                    <p class="highlight">A centralized digital hub for an artist project, integrating audio streaming
-                        seamless UI.</p>
-                    <ul class="project-feature-list">
-                        <li><strong>The Challenge:</strong> Moving beyond the limitations of Spotify profiles.</li>
-                        <li><strong>The Solution:</strong> A "Dark Mode" immersive identity with custom audio players.
-                        </li>
-                        <li><strong>Key Feature:</strong> Eye-catching hero of a two-layer interactive asset with
-                            high-performance asset loading for heavy media files.</li>
-                    </ul>
-                    <div class="tag-container" style="justify-content: flex-start;">
-                        <span class="tag">Artist Brand</span>
-                        <a class="tag" href="https://deadspace.page.gd" target="_blank" rel="noopener noreferrer">Live
-                            Site ↗</a>
-                    </div>
-                </div>
-
-                <!-- LIVE PREVIEW WINDOW -->
-                <div class="browser-window">
-                    <div class="browser-header">
-                        <div class="dot red"></div>
-                        <div class="dot yellow"></div>
-                        <div class="dot green"></div>
-                        <div class="address-bar">https://deadspace.page.gd</div>
-                    </div>
-                    <!-- IMPORTANT: PASTE YOUR LINK IN THE SRC ATTRIBUTE BELOW -->
-                    <iframe src="https://deadspace.page.gd" class="live-preview-frame" title="deadspace Preview"
-                        loading="lazy">
-                    </iframe>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Project 6: Midnight Anarchy -->
-    <section class="project">
-        <div class="container">
-            <div class="project-header">
-                <h3>06 — Events & Ticketing</h3>
-                <h2>Midnight Anarchy</h2>
-            </div>
-
-            <div class="project-grid">
-                <div class="project-info">
-                    <p class="highlight">An online presence and ticket conversion funnel for an events/party brand,
-                        powered by a lightweight Google Sheets/Forms backend engineered for efficiency and easy
-                        management.</p>
-                    <ul class="project-feature-list">
-                        <li><strong>The Challenge:</strong> Rapidly convert social traffic into ticket purchases and
-                            RSVPs.</li>
-                        <li><strong>The Solution:</strong> Streamlined landing + ticket flow with Google Forms/Sheets as
-                            the backend engine.</li>
-                        <li><strong>Key Feature:</strong> Fast checkout, easy event management, and conversion-focused
-                            microcopy.</li>
-                    </ul>
-                    <div class="tag-container" style="justify-content: flex-start;">
-                        <span class="tag">Event Space</span>
-                        <a class="tag" href="https://ianmadez.github.io/midnight-anarchy/" target="_blank"
-                            rel="noopener noreferrer">Live Site ↗</a>
-                    </div>
-                </div>
-
-                <!-- LIVE PREVIEW WINDOW -->
-                <div class="browser-window">
-                    <div class="browser-header">
-                        <div class="dot red"></div>
-                        <div class="dot yellow"></div>
-                        <div class="dot green"></div>
-                        <div class="address-bar">https://ianmadez.github.io/midnight-anarchy/</div>
-                    </div>
-                    <iframe src="https://ianmadez.github.io/midnight-anarchy/" class="live-preview-frame"
-                        title="Midnight Anarchy Preview" loading="lazy">
-                    </iframe>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- What I Bring -->
-    <section>
+    <!-- What I Bring (Services Entry Point) -->
+    <section id="services">
         <div class="container">
             <h2 style="text-align: center;">What I Bring to Your Project</h2>
             <div class="services">
@@ -375,39 +506,127 @@
                     <span class="number">01</span>
                     <h4>Development</h4>
                     <br>
-                    <p style="font-size: 0.95rem;">HTML5, CSS3, JavaScript, React. Clean, semantic code that Google SEO
-                        loves and users enjoy.</p>
+                    <p style="font-size: 0.95rem;">HTML5, CSS3, JavaScript, React. Clean, semantic code that Google SEO loves and users enjoy.</p>
                 </div>
                 <div class="service-card">
                     <span class="number">02</span>
                     <h4>Design</h4>
                     <br>
-                    <p style="font-size: 0.95rem;">Figma-grade UI/UX design. I focus on eye-catching heros, typography,
-                        spacing, and visual
-                        hierarchy to create premium vibes.</p>
+                    <p style="font-size: 0.95rem;">Figma-grade UI/UX design. I focus on eye-catching heroes, typography, spacing, and visual hierarchy to create premium vibes.</p>
                 </div>
                 <div class="service-card">
                     <span class="number">03</span>
                     <h4>Creativity</h4>
                     <br>
-                    <p style="font-size: 0.95rem;">A fresh, creative approach is applied to every website I build,
-                        integrating unique design elements and innovative solutions.</p>
+                    <p style="font-size: 0.95rem;">A fresh, creative approach is applied to every website I build, integrating unique design elements and innovative solutions.</p>
                 </div>
                 <div class="service-card">
                     <span class="number">04</span>
                     <h4>Strategy</h4>
                     <br>
-                    <p style="font-size: 0.95rem;">Conversion Rate Optimization (CRO). All elements such as buttons,
-                        calls-to-action and interactive elements are placed strategically and
-                        where they actually get clicked.</p>
+                    <p style="font-size: 0.95rem;">Conversion Rate Optimization (CRO). All elements such as buttons, calls-to-action, and interactive elements are placed strategically where they actually get clicked.</p>
                 </div>
                 <div class="service-card">
                     <span class="number">05</span>
                     <h4>Passion</h4>
                     <br>
-                    <p style="font-size: 0.95rem;">I bring a genuine passion for web development and design, ensuring
-                        that every project I work on is completed with dedication and utmost attention to detail.</p>
+                    <p style="font-size: 0.95rem;">I bring a genuine passion for web development and design, ensuring that every project I work on is completed with dedication and utmost attention to detail.</p>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Investment / Pricing -->
+    <section class="investment">
+        <div class="container">
+            <div class="project-header" style="text-align: center; margin-bottom: 4rem;">
+                <h3>Investment</h3>
+                <h2>Find Your <span class="gradient-text">Tier</span></h2>
+                <br>
+                <p style="max-width: 650px; margin: 0 auto; color: var(--muted, #555);">
+                    I offer web-development and design packages designed to generate a return on your investment. Every
+                    project is custom-scoped based on your specific goals and the true technical footprint required.
+                </p>
+            </div>
+
+            <div class="investment-grid">
+                <!-- Tier 1 -->
+                <div class="investment-card">
+                    <h4>Landing Page</h4>
+                    <p class="investment-desc">High-converting landing pages built for immediate impact and lead capture.</p>
+
+                    <div class="scope-breakdown">
+                        <p>A "single page" funnel always includes necessary utility routing: Main Landing Page, Success/Thank You Page, Custom 404, Privacy Policy, and Terms & Conditions.</p>
+                        <span class="scope-label">Actual Scope: ~3-5 Pages</span>
+                    </div>
+
+                    <ul class="investment-features">
+                        <li class="included"><i class="fas fa-check"></i> Standard Strategy Consultation</li>
+                        <li class="included"><i class="fas fa-check"></i> Conversion-Optimized Static UI</li>
+                        <li class="included"><i class="fas fa-check"></i> Basic Analytics & Lead Routing</li>
+                        <li class="included"><i class="fas fa-check"></i> Full Site Handover</li>
+                        <li class="excluded"><i class="fas fa-times"></i> Domain and Hosting Handling</li>
+                        <li class="excluded"><i class="fas fa-times"></i> Content Management System (CMS)</li>
+                        <li class="excluded"><i class="fas fa-times"></i> Continuous A/B Testing & CRO</li>
+                        <li class="excluded"><i class="fas fa-times"></i> Dedicated Management Retainer</li>
+                    </ul>
+                    <div class="turnaround-time" style="color: var(--muted, #82a1d1);">2-3 Week Turnaround</div>
+                </div>
+
+                <!-- Tier 2 (Highlighted) -->
+                <div class="investment-card featured">
+                    <div class="featured-badge">Most Popular</div>
+                    <h4>The Full Build</h4>
+                    <p class="investment-desc">Complete brand architecture, custom web platforms, and CMS integration.</p>
+
+                    <div class="scope-breakdown">
+                        <p>A standard "4-page" site (Home, About, Services, Contact) requires dynamic routing for portfolios/blogs, plus the full suite of utility, legal, and error-handling pages.</p>
+                        <span class="scope-label">Actual Scope: ~8-12 Pages</span>
+                    </div>
+
+                    <ul class="investment-features">
+                        <li class="included"><i class="fas fa-check"></i> Deep-Dive Brand Strategy Session</li>
+                        <li class="included"><i class="fas fa-check"></i> Premium UI/UX with Advanced Animations</li>
+                        <li class="included"><i class="fas fa-check"></i> Comprehensive SEO Setup</li>
+                        <li class="included"><i class="fas fa-check"></i> Optional CMS Integration</li>
+                        <li class="included"><i class="fas fa-check"></i> Part-Time Web Management Retainer</li>
+                        <li class="included"><i class="fas fa-check"></i> Domain and Hosting Handling</li>
+                        <li class="excluded"><i class="fas fa-times"></i> Continuous A/B Testing & CRO</li>
+                        <li class="excluded"><i class="fas fa-times"></i> Full-Time Web Management Retainer</li>
+                    </ul>
+                    <div class="turnaround-time" style="color: var(--muted, #82a1d1);">4-6 Week Turnaround</div>
+                </div>
+
+                <!-- Tier 3 -->
+                <div class="investment-card">
+                    <h4>Growth Partner</h4>
+                    <p class="investment-desc">Ongoing technical optimization, continuous scaling, and priority engineering.</p>
+
+                    <div class="scope-breakdown">
+                        <p>For brands/businesses that are in a state of growth. I will continuously analyze traffic, run A/B tests, and build out new pages or features as your operations expand.</p>
+                        <span class="scope-label">Actual Scope: Continuous</span>
+                    </div>
+
+                    <ul class="investment-features">
+                        <li class="included"><i class="fas fa-check"></i> Deep-Dive Brand Strategy Session</li>
+                        <li class="included"><i class="fas fa-check"></i> Premium UI/UX with Advanced Animations</li>
+                        <li class="included"><i class="fas fa-check"></i> Comprehensive SEO Setup & CMS</li>
+                        <li class="included"><i class="fas fa-check"></i> Domain and Hosting Handling</li>
+                        <li class="included"><i class="fas fa-check"></i> Continuous A/B Testing & CRO Tweaks</li>
+                        <li class="included"><i class="fas fa-check"></i> Active Performance & Uptime Monitoring</li>
+                        <li class="included"><i class="fas fa-check"></i> Full-Time Retainer & Priority Queue</li>
+                    </ul>
+                    <div class="turnaround-time" style="color: var(--muted, #82a1d1);">Continuous Partnership</div>
+                </div>
+            </div>
+
+            <div class="investment-cta">
+                <p class="investment-cta-text">
+                    Not sure which tier fits your current goals? Let's figure it out together.
+                </p>
+                <a href="#contact" class="btn-listen">
+                    Request a Custom Scope
+                </a>
             </div>
         </div>
     </section>
@@ -422,8 +641,6 @@
 
             <div class="carousel-container">
                 <div class="carousel-track">
-
-                    <!-- Testimonial 1 -->
                     <div class="testimonial-card">
                         <i class="fas fa-quote-left quote-icon"></i>
                         <p class="highlight">"We had a very specific vision for our website, and we were struggling to
@@ -448,122 +665,13 @@
                             <span>Premium Service Agency</span>
                         </div>
                     </div>
-
                 </div>
 
-                <!-- Carousel Controls -->
                 <div class="carousel-controls">
                     <button class="carousel-btn prev-btn"><i class="fas fa-chevron-left"></i></button>
                     <div class="carousel-dots"></div>
                     <button class="carousel-btn next-btn"><i class="fas fa-chevron-right"></i></button>
                 </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Investment / Pricing Lead -->
-    <section class="investment" id="services">
-        <div class="container">
-            <div class="project-header" style="text-align: center; margin-bottom: 4rem;">
-                <h3>Investment</h3>
-                <h2>Find Your <span class="gradient-text">Tier</span></h2>
-                <br>
-                <p style="max-width: 650px; margin: 0 auto; color: var(--muted, #555);">
-                    I offer web-development and design packages designed to generate a return on your investment. Every
-                    project is custom-scoped based on your specific goals and the true technical footprint required.
-                </p>
-            </div>
-
-            <div class="investment-grid">
-                <!-- Tier 1 -->
-                <div class="investment-card">
-                    <h4>Landing Page</h4>
-                    <p class="investment-desc">High-converting landing pages built for immediate impact and lead
-                        capture.</p>
-
-                    <div class="scope-breakdown">
-                        <p>A "single page" funnel always includes necessary utility routing: Main Landing Page,
-                            Success/Thank You Page, Custom 404, Privacy Policy, and Terms & Conditions.</p>
-                        <span class="scope-label">Actual Scope: ~3-5 Pages</span>
-                    </div>
-
-                    <ul class="investment-features">
-                        <li class="included"><i class="fas fa-check"></i> Standard Strategy Consultation</li>
-                        <li class="included"><i class="fas fa-check"></i> Conversion-Optimized Static UI</li>
-                        <li class="included"><i class="fas fa-check"></i> Basic Analytics & Lead Routing</li>
-                        <li class="included"><i class="fas fa-check"></i> Full Site Handover</li>
-                        <li class="excluded"><i class="fas fa-times"></i> Domain and Hosting Handling</li>
-                        <li class="excluded"><i class="fas fa-times"></i> Content Management System (CMS)</li>
-                        <li class="excluded"><i class="fas fa-times"></i> Continuous A/B Testing & CRO</li>
-                        <li class="excluded"><i class="fas fa-times"></i> Dedicated Management Retainer</li>
-                    </ul>
-                    <div class="turnaround-time" style="color: var(--muted, #82a1d1);">2-3 Week Turnaround</div>
-                </div>
-
-                <!-- Tier 2 (Highlighted) -->
-                <div class="investment-card featured">
-                    <div class="featured-badge">Most Popular</div>
-                    <h4>The Full Build</h4>
-                    <p class="investment-desc">Complete brand architecture, custom web platforms, and CMS integration.
-                    </p>
-
-                    <div class="scope-breakdown">
-                        <p>A standard "4-page" site (Home, About, Services, Contact) requires dynamic routing for
-                            portfolios/blogs, plus the full suite of utility, legal, and error-handling pages.</p>
-                        <span class="scope-label">Actual Scope: ~8-12 Pages</span>
-                    </div>
-
-                    <ul class="investment-features">
-                        <li class="included"><i class="fas fa-check"></i> Deep-Dive Brand Strategy Session</li>
-                        <li class="included"><i class="fas fa-check"></i> Premium UI/UX with Advanced Animations</li>
-                        <li class="included"><i class="fas fa-check"></i> Comprehensive SEO Setup</li>
-                        <li class="included"><i class="fas fa-check"></i> Optional CMS Integration</li>
-                        <li class="included"><i class="fas fa-check"></i> Part-Time Web Management Retainer</li>
-                        <li class="included"><i class="fas fa-check"></i> Domain and Hosting Handling</li>
-                        <li class="excluded"><i class="fas fa-times"></i> Continuous A/B Testing & CRO</li>
-                        <li class="excluded"><i class="fas fa-times"></i> Full-Time Web Management Retainer</li>
-                    </ul>
-                    <div class="turnaround-time" style="color: var(--muted, #82a1d1);">4-6 Week Turnaround</div>
-                </div>
-
-                <!-- Tier 3 -->
-                <div class="investment-card">
-                    <h4>Growth Partner</h4>
-                    <p class="investment-desc">Ongoing technical optimization, continuous scaling, and priority
-                        engineering.</p>
-
-                    <div class="scope-breakdown">
-                        <p>For brands/businesses that are in a state of growth. I will continuously analyze traffic, run
-                            A/B tests, and build out new pages or features as your operations expand.</p>
-                        <span class="scope-label">Actual Scope: Continuous</span>
-                    </div>
-
-                    <ul class="investment-features">
-                        <li class="included"><i class="fas fa-check"></i> Deep-Dive Brand Strategy Session</li>
-                        <li class="included"><i class="fas fa-check"></i> Premium UI/UX with Advanced Animations</li>
-                        <li class="included"><i class="fas fa-check"></i> Comprehensive SEO Setup & CMS</li>
-                        <li class="included"><i class="fas fa-check"></i> Domain and Hosting Handling</li>
-                        <li class="included"><i class="fas fa-check"></i> Continuous A/B Testing & CRO Tweaks</li>
-                        <li class="included"><i class="fas fa-check"></i> Active Performance & Uptime Monitoring</li>
-                        <li class="included"><i class="fas fa-check"></i> Full-Time Retainer & Priority Queue</li>
-                    </ul>
-                    <div class="turnaround-time" style="color: var(--muted, #82a1d1);">Continuous Partnership</div>
-                </div>
-            </div>
-
-            <div class="investment-cta"
-                style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; margin-top: 4rem; width: 100%;">
-
-                <p
-                    style="text-align: center; margin-bottom: 1.5rem; font-style: italic; color: var(--fg, #eaeaea); max-width: 600px;">
-                    Not sure which tier fits your current goals? Let's figure it out together.
-                </p>
-
-                <a href="#contact" class="btn-listen"
-                    style="background: var(--fg, #eaeaea); color: var(--bg, #0a0a0a); border: none; font-weight: 600; padding: 1.2rem 3rem; border-radius: 10px;">
-                    Request a Custom Scope
-                </a>
-
             </div>
         </div>
     </section>

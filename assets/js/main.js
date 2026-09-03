@@ -223,7 +223,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
           });
         }
       });
-    }, { rootMargin: '-40% 0px -55% 0px' });
+    }, { rootMargin: '-20% 0px -60% 0px' });
 
     sections.forEach(section => navObserver.observe(section));
   }
@@ -270,3 +270,118 @@ document.addEventListener("DOMContentLoaded", (event) => {
   setTimeout(() => ScrollTrigger.refresh(), 1000);
   setTimeout(() => ScrollTrigger.refresh(), 3000);
 });
+
+/* ==========================================================================
+   THEME TOGGLE ENGINE (Default Light)
+   ========================================================================== */
+const themeToggleBtn = document.getElementById('theme-toggle');
+
+const updateThemeIcon = (theme) => {
+  if (!themeToggleBtn) return;
+  const icon = themeToggleBtn.querySelector('i');
+  if (theme === 'dark') {
+    icon.className = 'fas fa-sun';
+  } else {
+    icon.className = 'fas fa-moon';
+  }
+};
+
+// Sync icon on startup
+const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+updateThemeIcon(currentTheme);
+
+if (themeToggleBtn) {
+  themeToggleBtn.addEventListener('click', () => {
+    const activeTheme = document.documentElement.getAttribute('data-theme');
+    const targetTheme = activeTheme === 'dark' ? 'light' : 'dark';
+
+    document.documentElement.setAttribute('data-theme', targetTheme);
+    localStorage.setItem('portfolio-theme', targetTheme);
+    updateThemeIcon(targetTheme);
+  });
+}
+
+/* ==========================================================================
+   PHASE 2: SYNTHESIZED WEB AUDIO FEEDBACK (Tactile UI Clicks)
+   ========================================================================== */
+const AudioEngine = (() => {
+  let ctx = null;
+
+  const init = () => {
+    if (!ctx) {
+      ctx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+  };
+
+  const playClick = (freq = 800, duration = 0.035) => {
+    try {
+      init();
+      if (ctx.state === 'suspended') ctx.resume();
+
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(120, ctx.currentTime + duration);
+
+      gain.gain.setValueAtTime(0.04, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.start();
+      osc.stop(ctx.currentTime + duration);
+    } catch (e) {
+      // AudioContext policy fallback
+    }
+  };
+
+  return { playClick };
+})();
+
+// Attach tactile sound feedback to key interaction targets
+document.querySelectorAll('a, button, .theme-toggle, .dot, .tag').forEach(el => {
+  el.addEventListener('click', () => AudioEngine.playClick(900, 0.025));
+});
+
+/* ==========================================================================
+   PHASE 2: FLUID CURSOR DISPLACEMENT ON HERO GLOW BLOB
+   ========================================================================== */
+const heroBlob = document.getElementById('interactive-blob');
+if (heroBlob) {
+  let targetX = 0, targetY = 0;
+  let currentX = 0, currentY = 0;
+
+  window.addEventListener('mousemove', (e) => {
+    const x = e.clientX - window.innerWidth / 2;
+    const y = e.clientY - window.innerHeight / 2;
+    targetX = x * 0.25;
+    targetY = y * 0.25;
+  }, { passive: true });
+
+  const renderBlob = () => {
+    currentX += (targetX - currentX) * 0.08;
+    currentY += (targetY - currentY) * 0.08;
+    heroBlob.style.transform = `translate(calc(-50% + ${currentX}px), calc(-50% + ${currentY}px))`;
+    requestAnimationFrame(renderBlob);
+  };
+  renderBlob();
+}
+
+/* ==========================================================================
+   PHASE 2: VIEWPORT CHASSIS SWITCHER (CHIC EMPORIUM)
+   ========================================================================== */
+const chicToggleBtn = document.getElementById('toggle-chic-viewport');
+const chicBrowser = document.getElementById('chic-browser');
+
+if (chicToggleBtn && chicBrowser) {
+  chicToggleBtn.addEventListener('click', () => {
+    AudioEngine.playClick(1200, 0.04);
+    chicBrowser.classList.toggle('is-phone-mode');
+    const isPhone = chicBrowser.classList.contains('is-phone-mode');
+    chicToggleBtn.querySelector('span').textContent = isPhone ? 'Desktop Mode' : 'Phone Mode';
+    chicToggleBtn.querySelector('i').className = isPhone ? 'fas fa-desktop' : 'fas fa-mobile-screen';
+  });
+}
