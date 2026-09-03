@@ -45,13 +45,16 @@ document.addEventListener('DOMContentLoaded', () => {
   // Create navigation dots dynamically based on the number of slides
   slides.forEach((_, index) => {
     const dot = document.createElement('div');
-    dot.classList.add('dot');
+    dot.classList.add('dot', 'carousel-dot');
     if (index === 0) dot.classList.add('active');
     dot.dataset.slide = index;
     dotsNav.appendChild(dot);
   });
 
   const dots = Array.from(dotsNav.children);
+  dots.forEach(dot => {
+    dot.addEventListener('pointerenter', () => AudioEngine.playHover());
+  });
   let currentIndex = 0;
   let autoPlayInterval;
 
@@ -90,6 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const targetDot = e.target.closest('.dot');
     if (!targetDot) return;
 
+    AudioEngine.playSound('click');
     currentIndex = parseInt(targetDot.dataset.slide);
     updateCarousel(currentIndex);
     resetAutoPlay();
@@ -306,6 +310,15 @@ if (themeToggleBtn) {
    ========================================================================== */
 const AudioEngine = (() => {
   let ctx = null;
+  let lastHoverAt = 0;
+
+  const sounds = {
+    buttonHover: { freq: 760, duration: 0.022, volume: 0.016 },
+    cardHover: { freq: 320, duration: 0.038, volume: 0.02 },
+    controlHover: { freq: 980, duration: 0.02, volume: 0.016 },
+    click: { freq: 900, duration: 0.025, volume: 0.04 },
+    special: { freq: 1200, duration: 0.04, volume: 0.04 }
+  };
 
   const init = () => {
     if (!ctx) {
@@ -313,7 +326,7 @@ const AudioEngine = (() => {
     }
   };
 
-  const playClick = (freq = 800, duration = 0.035) => {
+  const play = ({ freq, duration, volume }) => {
     try {
       init();
       if (ctx.state === 'suspended') ctx.resume();
@@ -325,7 +338,7 @@ const AudioEngine = (() => {
       osc.frequency.setValueAtTime(freq, ctx.currentTime);
       osc.frequency.exponentialRampToValueAtTime(120, ctx.currentTime + duration);
 
-      gain.gain.setValueAtTime(0.04, ctx.currentTime);
+      gain.gain.setValueAtTime(volume, ctx.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
 
       osc.connect(gain);
@@ -338,12 +351,48 @@ const AudioEngine = (() => {
     }
   };
 
-  return { playClick };
+  const playSound = (type, overrides = {}) => {
+    play({ ...sounds[type], ...overrides });
+  };
+
+  const playHover = (type = 'buttonHover') => {
+    const now = performance.now();
+    if (now - lastHoverAt < 70) return;
+    lastHoverAt = now;
+    playSound(type);
+  };
+
+  return { playSound, playHover };
 })();
 
-// Attach tactile sound feedback to key interaction targets
-document.querySelectorAll('a, button, .theme-toggle, .dot, .tag').forEach(el => {
-  el.addEventListener('click', () => AudioEngine.playClick(900, 0.025));
+const hoverGroups = [
+  {
+    type: 'buttonHover',
+    selectors: [
+      '.nav-links a', '.mobile-link', '#burger-menu', '#close-menu', '.btn-live',
+      '.btn-listen', '.btn-email', '.btn-github', '.btn-whatsapp', '#copy-email',
+      '.viewport-toggle-btn', '.carousel-btn', '.carousel-dot', '.tag',
+      '.interactive-display', '#code-cipher .cipher-char', '#design-butterflies'
+    ]
+  },
+  {
+    type: 'controlHover',
+    selectors: ['.theme-toggle', '#back-to-top']
+  },
+  {
+    type: 'cardHover',
+    selectors: ['.service-card', '.investment-card', '.browser-window']
+  }
+];
+
+hoverGroups.forEach(({ type, selectors }) => {
+  document.querySelectorAll(selectors.join(', ')).forEach(element => {
+    element.addEventListener('pointerenter', () => AudioEngine.playHover(type));
+  });
+});
+
+document.querySelectorAll('a, button:not(.viewport-toggle-btn), #burger-menu, #close-menu, .tag').forEach(element => {
+  element.addEventListener('click', () => AudioEngine.playSound('click'));
 });
 
 /* ==========================================================================
@@ -378,10 +427,126 @@ const chicBrowser = document.getElementById('chic-browser');
 
 if (chicToggleBtn && chicBrowser) {
   chicToggleBtn.addEventListener('click', () => {
-    AudioEngine.playClick(1200, 0.04);
+    AudioEngine.playSound('special');
     chicBrowser.classList.toggle('is-phone-mode');
     const isPhone = chicBrowser.classList.contains('is-phone-mode');
     chicToggleBtn.querySelector('span').textContent = isPhone ? 'Desktop Mode' : 'Phone Mode';
     chicToggleBtn.querySelector('i').className = isPhone ? 'fas fa-desktop' : 'fas fa-mobile-screen';
+  });
+}
+
+/* ==========================================================================
+   GLIDING NAV UNDERLINE
+   ========================================================================== */
+const navLinksContainer = document.querySelector('.nav-links');
+const navIndicator = document.querySelector('.nav-indicator');
+const desktopNavAnchors = document.querySelectorAll('.nav-links a');
+
+if (navLinksContainer && navIndicator && desktopNavAnchors.length) {
+  const moveIndicatorTo = (el) => {
+    if (!el) {
+      navIndicator.style.opacity = '0';
+      return;
+    }
+    const linkRect = el.getBoundingClientRect();
+    const containerRect = navLinksContainer.getBoundingClientRect();
+
+    const left = linkRect.left - containerRect.left;
+    const width = linkRect.width;
+
+    navIndicator.style.width = `${width}px`;
+    navIndicator.style.transform = `translateX(${left}px)`;
+    navIndicator.style.opacity = '1';
+  };
+
+  const syncActivePosition = () => {
+    const activeLink = navLinksContainer.querySelector('a.active') || desktopNavAnchors[0];
+    moveIndicatorTo(activeLink);
+  };
+
+  desktopNavAnchors.forEach(link => {
+    link.addEventListener('mouseenter', () => {
+      moveIndicatorTo(link);
+    });
+  });
+
+  navLinksContainer.addEventListener('mouseleave', () => {
+    syncActivePosition();
+  });
+
+  // Track scroll-spy updates triggered by the page IntersectionObserver
+  const linkObserver = new MutationObserver(() => {
+    if (!navLinksContainer.matches(':hover')) {
+      syncActivePosition();
+    }
+  });
+
+  desktopNavAnchors.forEach(link => {
+    linkObserver.observe(link, { attributes: true, attributeFilter: ['class'] });
+  });
+
+  window.addEventListener('resize', syncActivePosition, { passive: true });
+  window.addEventListener('load', syncActivePosition);
+  setTimeout(syncActivePosition, 150);
+}
+
+/* ==========================================================================
+   FEATURE 1: SLOW PER-LETTER ASCII CIPHER SCRAMBLER
+   ========================================================================== */
+const cipherChars = document.querySelectorAll('#code-cipher .cipher-char');
+
+if (cipherChars.length) {
+  const glyphs = '01#%&<>*~?/+=[]X$!';
+
+  cipherChars.forEach(charEl => {
+    const orig = charEl.getAttribute('data-orig');
+    let timer = null;
+
+    charEl.addEventListener('mouseenter', () => {
+      charEl.classList.add('is-active');
+      clearInterval(timer);
+
+      // Slower, deliberate scramble pace (~85ms)
+      timer = setInterval(() => {
+        const randomGlyph = glyphs[Math.floor(Math.random() * glyphs.length)];
+        charEl.textContent = randomGlyph;
+
+        if (typeof AudioEngine !== 'undefined') {
+          AudioEngine.playSound('special', {
+            freq: 1100 + Math.random() * 300,
+            duration: 0.015,
+            volume: 0.04
+          });
+        }
+      }, 85);
+    });
+
+    charEl.addEventListener('mouseleave', () => {
+      clearInterval(timer);
+      charEl.textContent = orig;
+      charEl.classList.remove('is-active');
+    });
+  });
+}
+
+/* ==========================================================================
+   FEATURE 2: BORDERLESS FROSTED BUTTERFLY HOVER TRACKER
+   ========================================================================== */
+const designWrap = document.getElementById('design-butterflies');
+const butterflyBackdrop = document.getElementById('butterfly-backdrop');
+
+if (designWrap && butterflyBackdrop) {
+  designWrap.addEventListener('mousemove', (e) => {
+    const bRect = butterflyBackdrop.getBoundingClientRect();
+    const x = e.clientX - bRect.left;
+    const y = e.clientY - bRect.top;
+
+    butterflyBackdrop.style.setProperty('--mouse-x', `${x}px`);
+    butterflyBackdrop.style.setProperty('--mouse-y', `${y}px`);
+  });
+
+  designWrap.addEventListener('mouseleave', () => {
+    butterflyBackdrop.style.setProperty('--mouse-x', '50%');
+    butterflyBackdrop.style.setProperty('--mouse-y', '50%');
   });
 }
