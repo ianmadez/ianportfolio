@@ -322,9 +322,32 @@ const AudioEngine = (() => {
 
   const init = () => {
     if (!ctx) {
-      ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (AudioCtx) ctx = new AudioCtx();
+    }
+    if (ctx && ctx.state === 'suspended') {
+      ctx.resume();
     }
   };
+
+  // Safari / WebKit direct hardware unlocker
+  const unlockSafari = () => {
+    init();
+    if (ctx) {
+      const buffer = ctx.createBuffer(1, 1, 22050);
+      const source = ctx.createBufferSource();
+      source.buffer = buffer;
+      source.connect(ctx.destination);
+      source.start(0);
+    }
+    ['touchstart', 'touchend', 'click'].forEach(evt => {
+      window.removeEventListener(evt, unlockSafari, true);
+    });
+  };
+
+  ['touchstart', 'touchend', 'click'].forEach(evt => {
+    window.addEventListener(evt, unlockSafari, { capture: true, passive: true });
+  });
 
   const play = ({ freq, duration, volume }) => {
     try {
@@ -530,23 +553,50 @@ if (cipherChars.length) {
 }
 
 /* ==========================================================================
-   FEATURE 2: BORDERLESS FROSTED BUTTERFLY HOVER TRACKER
+   FEATURE 2: BORDERLESS FROSTED BUTTERFLY HOVER & TOUCH SWIPE TRACKER
    ========================================================================== */
 const designWrap = document.getElementById('design-butterflies');
 const butterflyBackdrop = document.getElementById('butterfly-backdrop');
 
 if (designWrap && butterflyBackdrop) {
-  designWrap.addEventListener('mousemove', (e) => {
+  const updateMaskPosition = (clientX, clientY) => {
     const bRect = butterflyBackdrop.getBoundingClientRect();
-    const x = e.clientX - bRect.left;
-    const y = e.clientY - bRect.top;
-
+    const x = clientX - bRect.left;
+    const y = clientY - bRect.top;
     butterflyBackdrop.style.setProperty('--mouse-x', `${x}px`);
     butterflyBackdrop.style.setProperty('--mouse-y', `${y}px`);
+  };
+
+  // Desktop Mouse Hover
+  designWrap.addEventListener('mousemove', (e) => {
+    updateMaskPosition(e.clientX, e.clientY);
   });
 
   designWrap.addEventListener('mouseleave', () => {
     butterflyBackdrop.style.setProperty('--mouse-x', '50%');
     butterflyBackdrop.style.setProperty('--mouse-y', '50%');
   });
+
+  // Mobile Touch Scrubbing (Swipe while pressed down)
+  designWrap.addEventListener('touchstart', (e) => {
+    designWrap.classList.add('is-touch-active');
+    if (e.touches.length) {
+      updateMaskPosition(e.touches[0].clientX, e.touches[0].clientY);
+    }
+  }, { passive: true });
+
+  designWrap.addEventListener('touchmove', (e) => {
+    if (e.touches.length) {
+      updateMaskPosition(e.touches[0].clientX, e.touches[0].clientY);
+    }
+  }, { passive: true });
+
+  const resetTouch = () => {
+    designWrap.classList.remove('is-touch-active');
+    butterflyBackdrop.style.setProperty('--mouse-x', '50%');
+    butterflyBackdrop.style.setProperty('--mouse-y', '50%');
+  };
+
+  designWrap.addEventListener('touchend', resetTouch, { passive: true });
+  designWrap.addEventListener('touchcancel', resetTouch, { passive: true });
 }
